@@ -1,9 +1,3 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# In[2]:
-
-
 print("""This is a python script that will take a certain number of premises 
 and thier forms and a conclusion to show their truth table.
 Inspired by the sixth chapter of Understanding Arguments: An Introduction to informal logic
@@ -11,9 +5,6 @@ by Walter Simmott-Armstrong and Robert Fogelin
 
 14/07/2020
 Ahmed Alrabiah""")
-
-
-# In[43]:
 
 
 import re
@@ -76,7 +67,6 @@ for i in pre.keys(): #The truth values of the negated variables
                 pre[i] = value[::-1]
 
 
-# In[44]:
 
 
 for key, value in pre.items(): #add 
@@ -86,22 +76,3 @@ for key, value in pre.items(): #add
 for i in premises: #Add the premises to the dictionary
     if i not in pre:
         pre[i] = ''
-
-
-# In[45]:
-
-
-print(pre)
-
-
-# In[ ]:
-
-
-
-
-
-# In[ ]:
-
-
-
-
