@@ -8,6 +8,6 @@
   <li>p&q</li>
   <li>p or q</li>
   <li>if p then q</li>
-  <li>and their combinations.</li>
+  <li>and their combinations with parenthesis.</li>
   </ul>
   It accepts any variable in the English alphabet, capital or small.</p>
