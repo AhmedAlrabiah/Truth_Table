@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
+# In[9]:
 
 
 print("""This is a python script that will take a certain number of premises 
@@ -13,7 +13,7 @@ by Walter Simmott-Armstrong and Robert Fogelin
 Ahmed Alrabiah""")
 
 
-# In[2]:
+# In[71]:
 
 
 import re
@@ -33,10 +33,15 @@ pre = {}
 for i in ''.join(re.split(' or |&|if | then |~| |, ',premises)):#To add the single variables in the pre dictionary
     if ((ord(i) >= ord('A')) & (ord(i) <= ord('Z'))) or ((ord(i) >= ord('a') and ord(i) <= ord('z'))):
         pre[i] = ''
+
+for i in ''.join(re.split(' or |&|if | then |~| |, ', con)): #To add the single variables of the conclusion
+    if ((ord(i) >= ord('A')) & (ord(i) <= ord('Z'))) or ((ord(i) >= ord('a') and ord(i) <= ord('z'))):
+        pre[i] = ''
     
     
 pre.pop('', None)
 premises = premises.split(', ')
+premises.append(con)
 
 for i,k in zip(pre.keys(), range(len(pre))): #Write the truth values of the single variables
     counter = 0
@@ -50,27 +55,26 @@ for i,k in zip(pre.keys(), range(len(pre))): #Write the truth values of the sing
             counter += 1
         pre.update({i: values})
 
-
 for i in premises: #To add the negated single variables to the dictionary pre
     for j,k in zip(i, range(len(i))):
         if j == '~' and (((ord(j) >= ord('A')) & (ord(j) <= ord('Z'))) or ((ord(j) >= ord('a') and ord(j) <= ord('z')))):
             pre[j+i[k+1]] = ''
 
 
-
-
-for i in premises: #To take what is in the premises
-    for j in range(len(i)):
-        flag = False
-        if i[j] == '(':
-            x = j+1
-            flag = True
-        if i[j] == ')':
-            pre[i[x:j:]] = ''
-            flag = True
-    if flag == False:
-        pre[i] = ''
-
+for i in premises:#To take what is in the premises
+    if i not in list(pre.keys()):
+        print(i)
+        print(list(pre.keys()))
+        for j in range(len(i)):
+            flag = False
+            if i[j] == '(':
+                x = j+1
+                flag = True
+            if i[j] == ')':
+                pre[i[x:j:]] = ''
+                flag = True
+        if flag == False:
+            pre[i] = ''
 
 
 for i in pre.keys(): #The truth values of the negated variables
@@ -88,7 +92,14 @@ for i in premises: #If a parentheses is negated, this will add it
                     break
 
 
-# In[3]:
+# In[72]:
+
+
+print(pre.keys())
+print(list(pre.keys()))
+
+
+# In[73]:
 
 
 #Now the truth values of the single charecters are already added and also the the single negated charecters are added
@@ -153,20 +164,70 @@ for key in premises: #Add the premises to the dictionary
             pre[key] = truths
 
 
-# In[4]:
+# In[74]:
 
 
-#Now dealing with the conclusion:
+#The conclusion was added in the premises and it's already been dealt with
+printable = {}
+if con in premises:
+    premises.remove(con)
+for key, value in pre.items():
+    if key in premises:
+        printable[key] = value
+printable[con] = pre[con]
+print(tabulate(printable, headers="keys", showindex='always'))
 
 
-# In[5]:
+# In[46]:
 
 
-print(tabulate(pre, headers="keys"))
+#Testing the validity of the argument!!!!
+if pre[con] != "":
+    indexes = []
+    for i in premises:
+        for j,k in zip(pre[i], range(len(pre[i]))):
+            if j == 'T':
+                indexes.append(k)
+            if (j == 'F') and (k in indexes):
+                indexes.remove(k)
+    flag = 'Valid'
+    x = ''
+    for i,k in zip(pre[con], range(len(pre[con]))):
+        if (i == 'F') and (k in indexes):
+            flag = 'Invalid'
+            x += str(k) + ", "
+
+    if flag == 'Invalid':
+        if len(x[:-1:].split(' ')) == 1:
+            print(flag, 'because of line', x[:-2:])
+        else:
+            print(flag, 'because of lines', x[:-2:])
+    else:
+        print(flag)
+
+
+# In[47]:
+
+
+print(premises)
+print(con)
+print(pre)
+
+
+# In[19]:
+
+
+input()
+
+
+# In[64]:
+
+
+1 != 1
 
 
 # In[ ]:
 
 
-input()
+
 
