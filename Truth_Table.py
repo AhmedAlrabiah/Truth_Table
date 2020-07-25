@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[9]:
+# In[ ]:
 
 
 print("""This is a python script that will take a certain number of premises 
@@ -10,10 +10,11 @@ Inspired by the sixth chapter of Understanding Arguments: An Introduction to inf
 by Walter Simmott-Armstrong and Robert Fogelin
 
 14/07/2020
+25/07/2020
 Ahmed Alrabiah""")
 
 
-# In[76]:
+# In[26]:
 
 
 import re
@@ -56,9 +57,9 @@ for i,k in zip(pre.keys(), range(len(pre))): #Write the truth values of the sing
         pre.update({i: values})
 
 for i in premises: #To add the negated single variables to the dictionary pre
-    for j,k in zip(i, range(len(i))):
-        if j == '~' and (((ord(j) >= ord('A')) & (ord(j) <= ord('Z'))) or ((ord(j) >= ord('a') and ord(j) <= ord('z')))):
-            pre[j+i[k+1]] = ''
+    for j in range(len(i)):
+        if i[j] == '~' and (((ord(i[j+1]) >= ord('A')) & (ord(i[j+1]) <= ord('Z'))) or ((ord(i[j+1]) >= ord('a') and ord(i[j+1]) <= ord('z')))):
+            pre[i[j:j+2:]] = ''
 
 
 for i in premises:#To take what is in the premises
@@ -90,25 +91,47 @@ for i in premises: #If a parentheses is negated, this will add it
                     break
 
 
-# In[77]:
+# In[27]:
 
 
 #Now the truth values of the single charecters are already added and also the the single negated charecters are added
 
 #The next part will add the truth values of the connected propositions
 
-for key, value in pre.items(): #add the truth values of the propositions of pre without the last premises
+for key, value in pre.items(): #add the truth values of the propositions of pre without the last premise
     if value == '':
         #Adding the truth values of the connected propositions
         truths = ''
         if key[:2:] == 'if':
-            for i,j in zip(pre[key[3:4:]], pre[key[-1::]]):
-                if i == 'T' and j == 'F':
-                    truths += 'F'
-                elif i == 'T' or i == 'F':
-                    truths += 'T'
-        
-        elif key[:1:] in pre:
+            if key[3:4:] != '~' and key[-2:-1:] != '~':
+                for i,j in zip(pre[key[3:4:]], pre[key[-1::]]):
+                    if i == 'T' and j == 'F':
+                        truths += 'F'
+                    elif i == 'T' or i == 'F':
+                        truths += 'T'
+          
+            elif key[3:4:] == '~' and key[-2:-1:] != '~':
+                for i,j in zip(pre[key[3:5:]], pre[key[-1::]]):
+                    if i == 'T' and j == 'F':
+                        truths += 'F'
+                    elif i == 'T' or i == 'F':
+                        truths += 'T'
+                        
+            elif key[3:4:] != '~' and key[-2:-1:] == '~':
+                for i,j in zip(pre[key[3:4:]], pre[key[-2::]]):
+                    if i == 'T' and j == 'F':
+                        truths += 'F'
+                    elif i == 'T' or i == 'F':
+                        truths += 'T'
+          
+            elif key[3:4:] == '~' and key[-2:-1:] == '~':
+                for i,j in zip(pre[key[3:5:]], pre[key[-2::]]):
+                    if i == 'T' and j == 'F':
+                        truths += 'F'
+                    elif i == 'T' or i == 'F':
+                        truths += 'T'
+    
+        elif key[:1:] in pre and key[-2:-1:] != '~':
             for i,j in zip(pre[key[:1:]], pre[key[-1::]]):
                 if key[1:2:] == '&':
                     #and truth values
@@ -117,6 +140,51 @@ for key, value in pre.items(): #add the truth values of the propositions of pre 
                     elif i == 'T' or i == 'F':
                         truths += 'F'
                 if key[2:4:] == 'or':
+                    #or truth values
+                    if i == 'F' and j == 'F':
+                        truths += 'F'
+                    elif i == 'T' or i == 'F':
+                        truths += 'T'
+        
+        elif key[:2:] in pre and key[-2:-1:] != '~':
+            for i,j in zip(pre[key[:2:]], pre[key[-1::]]):
+                if key[2:3:] == '&':
+                    #and truth values
+                    if i == 'T' and j == 'T':
+                        truths += 'T'
+                    elif i == 'T' or i == 'F':
+                        truths += 'F'
+                if key[3:5:] == 'or':
+                    #or truth values
+                    if i == 'F' and j == 'F':
+                        truths += 'F'
+                    elif i == 'T' or i == 'F':
+                        truths += 'T'
+        
+        elif key[-2::] in pre and key[:1:] != '~':
+            for i,j in zip(pre[key[:1:]], pre[key[-2::]]):
+                if key[1:2:] == '&':
+                    #and truth values
+                    if i == 'T' and j == 'T':
+                        truths += 'T'
+                    elif i == 'T' or i == 'F':
+                        truths += 'F'
+                if key[2:4:] == 'or':
+                    #or truth values
+                    if i == 'F' and j == 'F':
+                        truths += 'F'
+                    elif i == 'T' or i == 'F':
+                        truths += 'T'
+        
+        elif key[-2::] in pre and key[:2:] in pre:
+            for i,j in zip(pre[key[:2:]], pre[key[-2::]]):
+                if key[2:3:] == '&':
+                    #and truth values
+                    if i == 'T' and j == 'T':
+                        truths += 'T'
+                    elif i == 'T' or i == 'F':
+                        truths += 'F'
+                if key[3:5:] == 'or':
                     #or truth values
                     if i == 'F' and j == 'F':
                         truths += 'F'
@@ -141,21 +209,55 @@ for key in premises: #Add the premises to the dictionary
         truths = ''
         for i in range(len(key)):
             if key[i] == '&' and key[i - 1] == ')':
-                for j,k in zip(pre[key[0:i:]], pre[key[i+1::]]):
-                    if j == 'T' and k == 'T':
-                        truths += 'T'
-                    elif j == 'T' or j == 'F':
-                        truths += 'F'
+                if key[:i:] in pre and key[i+1::] in pre:
+                    for j,k in zip(pre[key[:i:]], pre[key[i+1::]]):
+                        if j == 'T' and k == 'T':
+                            truths += 'T'
+                        elif j == 'T' or j == 'F':
+                            truths += 'F'
+                elif key[:i:] in pre and key[i+1::] not in pre:
+                    for j,k in zip(pre[key[:i:]], pre[key[i+2:-1:]]):
+                        if j == 'T' and k == 'T':
+                            truths += 'T'
+                        elif j == 'T' or j == 'F':
+                            truths += 'F'
+                elif key[:i:] not in pre and key[i+1::] not in pre:
+                    for j,k in zip(pre[key[1:i-1:]], pre[key[i+2:-1:]]):
+                        if j == 'T' and k == 'T':
+                            truths += 'T'
+                        elif j == 'T' or j == 'F':
+                            truths += 'F'
+                            
+                
             elif key[i-1:i+3:] == ' or ' and key[i - 2] == ')':
-                for j,k in zip(pre[key[0:i-1:]], pre[key[i+3::]]):
-                    if j == 'F' and k == 'F':
-                        truths += 'F'
-                    elif j == 'T' or j == 'F':
-                        truths += 'T'
+                if key[:i-1:] in pre and key[i+3::] in pre:
+                    for j,k in zip(pre[key[:i-1:]], pre[key[i+3::]]):
+                        if j == 'F' and k == 'F':
+                            truths += 'F'
+                        elif j == 'T' or j == 'F':
+                            truths += 'T'
+                elif key[:i-1:] in pre and key[i+3::] not in pre:
+                    for j,k in zip(pre[key[:i-1:]], pre[key[i+4:-1:]]):
+                        if j == 'F' and k == 'F':
+                            truths += 'F'
+                        elif j == 'T' or j == 'F':
+                            truths += 'T'
+                elif key[:i-1:] not in pre and key[i+3::] in pre:
+                    for j,k in zip(pre[key[1:i-1:]], pre[key[i+3::]]):
+                        if j == 'F' and k == 'F':
+                            truths += 'F'
+                        elif j == 'T' or j == 'F':
+                            truths += 'T'
+                elif key[:i-1:] not in pre and key[i+3::] not in pre:
+                    for j,k in zip(pre[key[1:i-1:]], pre[key[i+4:-1:]]):
+                        if j == 'F' and k == 'F':
+                            truths += 'F'
+                        elif j == 'T' or j == 'F':
+                            truths += 'T'
             pre[key] = truths
 
 
-# In[78]:
+# In[28]:
 
 
 #The conclusion was added in the premises and it's already been dealt with
@@ -169,7 +271,7 @@ printable[con] = pre[con]
 print(tabulate(printable, headers="keys", showindex='always'))
 
 
-# In[93]:
+# In[29]:
 
 
 #Testing the validity of the argument!!!!
@@ -179,13 +281,7 @@ if pre[con] != "":
         for j,k in zip(pre[i], range(len(pre[i]))):
             if (j == 'F') and (k in indexes):
                 indexes.remove(k)   
-    
-    
-    
-    print(indexes)
-    
-    
-    
+    print('the indices in which the premises are true are:', indexes)
     flag = 'Valid'
     x = ''
     for i,k in zip(pre[con], range(len(pre[con]))):
@@ -205,4 +301,10 @@ if pre[con] != "":
 
 
 input()
+
+
+# In[ ]:
+
+
+
 
