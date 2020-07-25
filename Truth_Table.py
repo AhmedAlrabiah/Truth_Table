@@ -297,14 +297,6 @@ if pre[con] != "":
         print(flag)
 
 
-# In[19]:
-
-
-input()
-
-
-# In[ ]:
-
 
 
 
