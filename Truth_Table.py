@@ -13,7 +13,7 @@ by Walter Simmott-Armstrong and Robert Fogelin
 Ahmed Alrabiah""")
 
 
-# In[71]:
+# In[76]:
 
 
 import re
@@ -63,8 +63,6 @@ for i in premises: #To add the negated single variables to the dictionary pre
 
 for i in premises:#To take what is in the premises
     if i not in list(pre.keys()):
-        print(i)
-        print(list(pre.keys()))
         for j in range(len(i)):
             flag = False
             if i[j] == '(':
@@ -92,14 +90,7 @@ for i in premises: #If a parentheses is negated, this will add it
                     break
 
 
-# In[72]:
-
-
-print(pre.keys())
-print(list(pre.keys()))
-
-
-# In[73]:
+# In[77]:
 
 
 #Now the truth values of the single charecters are already added and also the the single negated charecters are added
@@ -164,7 +155,7 @@ for key in premises: #Add the premises to the dictionary
             pre[key] = truths
 
 
-# In[74]:
+# In[78]:
 
 
 #The conclusion was added in the premises and it's already been dealt with
@@ -178,25 +169,29 @@ printable[con] = pre[con]
 print(tabulate(printable, headers="keys", showindex='always'))
 
 
-# In[46]:
+# In[93]:
 
 
 #Testing the validity of the argument!!!!
 if pre[con] != "":
-    indexes = []
+    indexes = list(range(len(pre[premises[0]])))
     for i in premises:
         for j,k in zip(pre[i], range(len(pre[i]))):
-            if j == 'T':
-                indexes.append(k)
             if (j == 'F') and (k in indexes):
-                indexes.remove(k)
+                indexes.remove(k)   
+    
+    
+    
+    print(indexes)
+    
+    
+    
     flag = 'Valid'
     x = ''
     for i,k in zip(pre[con], range(len(pre[con]))):
         if (i == 'F') and (k in indexes):
             flag = 'Invalid'
             x += str(k) + ", "
-
     if flag == 'Invalid':
         if len(x[:-1:].split(' ')) == 1:
             print(flag, 'because of line', x[:-2:])
@@ -206,28 +201,8 @@ if pre[con] != "":
         print(flag)
 
 
-# In[47]:
-
-
-print(premises)
-print(con)
-print(pre)
-
-
 # In[19]:
 
 
 input()
-
-
-# In[64]:
-
-
-1 != 1
-
-
-# In[ ]:
-
-
-
 
